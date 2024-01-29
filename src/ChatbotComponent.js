@@ -5,27 +5,33 @@ import { Button, TextField, Box, Paper, Typography } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import CloseIcon from "@mui/icons-material/Close";
 import SettingsSuggestOutlinedIcon from "@mui/icons-material/SettingsSuggestOutlined";
-import QuickreplyOutlinedIcon from "@mui/icons-material/QuickreplyOutlined";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
-import InfoIcon from "@mui/icons-material/Info";
 import SportsVolleyballOutlinedIcon from "@mui/icons-material/SportsVolleyballOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import SmartToyOutlinedIcon from "@mui/icons-material/SmartToyOutlined";
 import { chatBotdata } from "./data/chatbotData";
+import { welcomeData } from "./data/welcomeData";
+
 const ChatbotComponent = (props) => {
   var mockData = [];
+  var welcome
   const { scenario } = props;
   if (scenario === 1) {
     mockData = chatBotdata.scenario1;
+    welcome = welcomeData.scenario1.welcomeMessage;
   } else if (scenario === 2) {
     mockData = chatBotdata.scenario2;
+    welcome = welcomeData.scenario2.welcomeMessage;
   } else if (scenario === 3) {
     mockData = chatBotdata.scenario3;
+    welcome = welcomeData.scenario3.welcomeMessage;
   } else if (scenario === 4) {
     mockData = chatBotdata.scenario4;
+    welcome = welcomeData.scenario4.welcomeMessage;
   } else if (scenario === 5) {
     mockData = chatBotdata.scenario5;
+    welcome = welcomeData.scenario5.welcomeMessage;
   }
 
   const [input, setInput] = useState("");
@@ -69,7 +75,7 @@ const ChatbotComponent = (props) => {
       setIsvisible(true);
 
       const welcomeMessage = {
-        text: "Hello! How can I assist you today?..",
+        text: `${welcome}`,
         user: false,
         tooltip: false,
       };
@@ -119,7 +125,15 @@ const ChatbotComponent = (props) => {
       await delay(2000);
       // Return the message after the delay
       return "Call back Scheduled.. We will reach you out on or before 28/01/2024";
+    } else if (userInput === "increase the customer credit card limit") {
+      // Wait for 2000 milliseconds (2 seconds)
+      apiRes = true;
+      // setDisplayOffer(false);
+      await delay(2000);
+      // Return the message after the delay
+      return "Congratulations! Your request to increase your credit limit has been approved. You now have more financial flexibility at your fingertips. Enjoy the enhanced purchasing power and make the most of your expanded credit limit. Thank you for choosing us to support your financial journey!";
     }
+
     const apiEndpoint =
       "https://aaraa-openai.openai.azure.com/openai/deployments/aaraa-gptdeployment/extensions/chat/completions?api-version=2023-07-01-preview";
     const headers = {
@@ -156,7 +170,7 @@ const ChatbotComponent = (props) => {
         },
         {
           role: "user",
-          content: "list products available in savings account",
+          content: `${userInput} in 2 lines`, //Replace input given in chat window
         },
       ],
       deployment: "aaraa-gptdeployment",
@@ -245,9 +259,13 @@ const ChatbotComponent = (props) => {
       "Mortgage",
       "Savings",
       "youth",
+      "£2500",
       "student",
       "Everyday",
       "joint",
+      "eligible",
+      "£1000",
+      
     ];
 
     const words = originalString.split(/\s+/);

@@ -51,8 +51,7 @@
     height: fit-content;
     width: fit-content;
     word-break: break-word;
-    padding-right: 3%;
-    width: 80%;
+    padding-right: 2%;
   }
   .chatbot-input-form {
     display: flex;
