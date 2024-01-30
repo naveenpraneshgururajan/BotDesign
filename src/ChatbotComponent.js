@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import axios from "axios";
-import "./Chatbot.css";
+import "./css/Chatbot.css";
 import { Button, TextField, Box, Paper, Typography } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import CloseIcon from "@mui/icons-material/Close";
