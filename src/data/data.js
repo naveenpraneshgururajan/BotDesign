@@ -143,7 +143,7 @@ const productsPaneldata = {
     },
     {
       icon: SpaIcon,
-      label: "IPR",
+      label: "CUR",
       value: "Holder of the Product",
     },
 
@@ -166,7 +166,7 @@ const productsPaneldata = {
     },
     {
       icon: SpaIcon,
-      label: "IPR",
+      label: "CUR",
       value: "Authorised Card Holder",
     },
 
@@ -189,7 +189,7 @@ const productsPaneldata = {
     },
     {
       icon: SpaIcon,
-      label: "IPR",
+      label: "CUR",
       value: "Holder of the Product",
     },
 
@@ -212,7 +212,7 @@ const productsPaneldata = {
     },
     {
       icon: SpaIcon,
-      label: "IPR",
+      label: "CUR",
       value: "N/A",
     },
 
@@ -235,7 +235,7 @@ const productsPaneldata = {
     },
     {
       icon: SpaIcon,
-      label: "IPR",
+      label: "CUR",
       value: "Power of Attorney",
     },
 

@@ -231,12 +231,12 @@ const ChatbotComponent = (props) => {
     if (response && mockData[0].offerDisplay && apiRes) {
       console.log("apiRespo", apiRes);
       setTimeout(() => {
-        const newAiMessage1 = {
-          text: "Offer Available",
-          user: false,
-          tooltip: true,
-        };
-        setMessages((prevMessages) => [...prevMessages, newAiMessage1]);
+        // const newAiMessage1 = {
+        //   text: "Offer Available",
+        //   user: false,
+        //   tooltip: true,
+        // };
+        // setMessages((prevMessages) => [...prevMessages, newAiMessage1]);
         setDisplayOffer(true);
       }, 2000);
     }
@@ -332,42 +332,6 @@ const ChatbotComponent = (props) => {
               ></CloseIcon>
             </div>
           </Paper>
-          {/* {displayOffer&& (
-          <div className="offer-available-section" style={{ background: '#FFECB3', padding: '10px', marginBottom: '15px', borderRadius: '8px' }}>
-            <Typography variant="body1" color="primary">
-              Offer Available
-            </Typography>
-            <Typography variant="body2" color="textPrimary">
-              {mockData[0].offer}
-            </Typography>
-          </div>
-        )} */}
-          {/* {displayOffer && (
-          <div className="offer-available-section" style={{ background: '#FFF', padding: '15px', marginBottom: '15px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}
-
-          >
-            <Typography variant="body1" color="primary">
-              Offer Available
-            </Typography>
-            <Typography variant="body2" color="textPrimary">
-              {mockData[0].offer}
-            </Typography>
-          </div>
-        )} */}
-          {/* <div className="offer-banner">
-  <p>Offer Available: {mockData[0].offer}</p>
-</div> */}
-          {/* <div className="offer-card">
-  <p>Offer Available: {mockData[0].offer}</p>
-</div> */}
-
-          {/* <div className="dropdown">
-  <span  style={{ background: '#FFECB3', padding: '10px', marginBottom: '15px', borderRadius: '8px' }}>Offer Available:</span>
-  <div className="dropdown-content">
-     {mockData[0].offer}
-  </div>
-</div> */}
-
           <Paper className="chatbot-messages">
             {messages.map((message, index) => (
               <div
@@ -381,7 +345,7 @@ const ChatbotComponent = (props) => {
                     style={{ fontSize: 20, padding: 8, display: "flex" }}
                   />
                 )}
-                {displayOffer && !message.user && message.tooltip ? (
+                {/* {displayOffer && !message.user && message.tooltip ? (
                   <div ref={tooltipRef}>
                     <Tooltip
                       title={mockData[0].offer}
@@ -398,16 +362,17 @@ const ChatbotComponent = (props) => {
                       {formatMessage(message.text)}
                     </Tooltip>
                   </div>
-                ) : (
-                  <>{formatMessage(message.text)}</>
-                )}
+                ) : ( */}
+                  
+                {/* )} */}
+                <>{formatMessage(message.text)}</>
               </div>
             ))}
             <div ref={messagesEndRef}></div>
           </Paper>
 
           <div>
-          {/* {true&& (
+          {displayOffer && (
           <div className="offer-available-section" style={{ background: '#FFECB3', padding: '10px', marginBottom: '15px',marginTop:'10px', borderRadius: '8px' }}>
             <Typography variant="body1" color="primary">
               Offer Available
@@ -416,7 +381,7 @@ const ChatbotComponent = (props) => {
               {mockData[0].offer}
             </Typography>
           </div>
-        )} */}
+        )}
             <form className="chatbot-input-form" onSubmit={handleSubmit}>
               <Box
                 sx={{
