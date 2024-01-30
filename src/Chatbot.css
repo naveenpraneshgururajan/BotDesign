@@ -92,3 +92,67 @@
   .chatIcon:hover{
     cursor: pointer;
   } 
+
+  /* .offer-available-section {
+    background-color: #ffc107; /* Yellow background color, adjust as needed */
+    /* padding: 10px;
+    border-radius: 8px; */
+    /* margin-bottom: 10px;
+  } */ 
+  
+  /* .offer-available-section p {
+    margin: 0;
+    font-weight: bold;
+    color: #024731; /* Adjust text color as needed */
+  /* }  */
+  /* .offer-available-section {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #3498db;
+    padding: 10px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  } */
+
+  /* .offer-banner {
+    background-color: #4caf50; 
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+  }  */
+
+  /* .offer-card {
+    background-color: #ffeb3b; 
+     padding: 5px;
+    text-align: center;
+    position: fixed;
+    width: 80%;
+    margin: 0 auto;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+  } */
+
+  /* .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    padding: 12px;
+    z-index: 1;
+  }
+  
+  .dropdown:hover .dropdown-content {
+    display: block;
+  } */
+  

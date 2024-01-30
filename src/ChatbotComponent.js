@@ -12,10 +12,11 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import SmartToyOutlinedIcon from "@mui/icons-material/SmartToyOutlined";
 import { chatBotdata } from "./data/chatbotData";
 import { welcomeData } from "./data/welcomeData";
+// import OfferAvailableSection from "./OfferAvailableSection";
 
 const ChatbotComponent = (props) => {
   var mockData = [];
-  var welcome
+  var welcome;
   const { scenario } = props;
   if (scenario === 1) {
     mockData = chatBotdata.scenario1;
@@ -265,7 +266,6 @@ const ChatbotComponent = (props) => {
       "joint",
       "eligible",
       "£1000",
-      
     ];
 
     const words = originalString.split(/\s+/);
@@ -332,6 +332,42 @@ const ChatbotComponent = (props) => {
               ></CloseIcon>
             </div>
           </Paper>
+          {/* {displayOffer&& (
+          <div className="offer-available-section" style={{ background: '#FFECB3', padding: '10px', marginBottom: '15px', borderRadius: '8px' }}>
+            <Typography variant="body1" color="primary">
+              Offer Available
+            </Typography>
+            <Typography variant="body2" color="textPrimary">
+              {mockData[0].offer}
+            </Typography>
+          </div>
+        )} */}
+          {/* {displayOffer && (
+          <div className="offer-available-section" style={{ background: '#FFF', padding: '15px', marginBottom: '15px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}
+
+          >
+            <Typography variant="body1" color="primary">
+              Offer Available
+            </Typography>
+            <Typography variant="body2" color="textPrimary">
+              {mockData[0].offer}
+            </Typography>
+          </div>
+        )} */}
+          {/* <div className="offer-banner">
+  <p>Offer Available: {mockData[0].offer}</p>
+</div> */}
+          {/* <div className="offer-card">
+  <p>Offer Available: {mockData[0].offer}</p>
+</div> */}
+
+          {/* <div className="dropdown">
+  <span  style={{ background: '#FFECB3', padding: '10px', marginBottom: '15px', borderRadius: '8px' }}>Offer Available:</span>
+  <div className="dropdown-content">
+     {mockData[0].offer}
+  </div>
+</div> */}
+
           <Paper className="chatbot-messages">
             {messages.map((message, index) => (
               <div
@@ -370,38 +406,50 @@ const ChatbotComponent = (props) => {
             <div ref={messagesEndRef}></div>
           </Paper>
 
-          <form className="chatbot-input-form" onSubmit={handleSubmit}>
-            <Box
-              sx={{
-                width: 700,
-                maxWidth: "100%",
-                boxShadow: "#024731",
-              }}
-            >
-              <TextField
-                fullWidth
-                hiddenLabel
-                id="outlined"
-                variant="outlined"
-                placeholder="Type your querry..."
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                inputRef={inputRef}
-                InputProps={{
-                  style: { color: "#024731" },
+          <div>
+          {/* {true&& (
+          <div className="offer-available-section" style={{ background: '#FFECB3', padding: '10px', marginBottom: '15px',marginTop:'10px', borderRadius: '8px' }}>
+            <Typography variant="body1" color="primary">
+              Offer Available
+            </Typography>
+            <Typography variant="body2" color="textPrimary">
+              {mockData[0].offer}
+            </Typography>
+          </div>
+        )} */}
+            <form className="chatbot-input-form" onSubmit={handleSubmit}>
+              <Box
+                sx={{
+                  width: 700,
+                  maxWidth: "100%",
+                  boxShadow: "#024731",
                 }}
-              />
-            </Box>
+              >
+                <TextField
+                  fullWidth
+                  hiddenLabel
+                  id="outlined"
+                  variant="outlined"
+                  placeholder="Type your querry..."
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  inputRef={inputRef}
+                  InputProps={{
+                    style: { color: "#024731" },
+                  }}
+                />
+              </Box>
 
-            <Button
-              onClick={handleSubmit}
-              variant="contained"
-              style={{ background: "#024731", paddingRight: 5, width: "35%" }}
-              endIcon={<SendIcon style={{ paddingRight: 10 }} />}
-            >
-              Send
-            </Button>
-          </form>
+              <Button
+                onClick={handleSubmit}
+                variant="contained"
+                style={{ background: "#024731", paddingRight: 5, width: "35%" }}
+                endIcon={<SendIcon style={{ paddingRight: 10 }} />}
+              >
+                Send
+              </Button>
+            </form>
+          </div>
         </div>
       ) : (
         <div onClick={handleOpenBot}>
