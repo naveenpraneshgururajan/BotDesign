@@ -42,11 +42,32 @@ const ChatbotComponent = (props) => {
   const [tooltipOpen, setTooltipOpen] = useState(true);
   const [defaultMessageDisplayed, setDefaultMessageDisplayed] = useState(false);
   const tooltipRef = useRef(null);
+  const [feedbackStatus, setFeedbackStatus] = useState({
+    liked: false,
+    disliked: false,
+  });
+  const [typeCompleted, setTypeCompleted] = useState(false);
 
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
   var apiRes = true;
+
+  const handleFeedback = (isLike, index) => {
+    setFeedbackStatus({
+      liked: isLike && !feedbackStatus.liked,
+      disliked: !isLike && !feedbackStatus.disliked,
+    });
+
+    // You can update the state of messages based on the index
+    const updatedMessages = [...messages];
+    updatedMessages[index] = {
+      ...updatedMessages[index],
+      liked: isLike,
+      disliked: !isLike,
+    };
+    setMessages(updatedMessages);
+  };
 
   useEffect(() => {
     // Scroll to the bottom of the chat container
@@ -102,6 +123,7 @@ const ChatbotComponent = (props) => {
 
     const delay1 = 2000; // Adjust the delay time in milliseconds
     const timeoutId1 = setTimeout(openChatbotWithDelay, delay1);
+    if (timeoutId1) setTypeCompleted(true);
 
     // Clean up the timeout when the component is unmounted
     return () => clearTimeout(timeoutId1);
@@ -198,6 +220,13 @@ const ChatbotComponent = (props) => {
   const handleOpenBot = () => {
     return setIsvisible(true);
   };
+
+  // Add this function to your component
+  const removeDocTags = (text) => {
+    // Use regex to remove [doc1], [doc2], etc. patterns
+    return text.replace(/\[doc\d+\]/g, "");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!input.trim()) return;
@@ -207,13 +236,16 @@ const ChatbotComponent = (props) => {
     setMessages((prevMessages) => [...prevMessages, aiMessage]);
     const response = await chatWithGPT3(input);
 
+    // Remove [doc1], [doc2], etc. from the response
+    const cleanedResponse = removeDocTags(response);
+
     // Display AI message with typing effect
     const typedResponse = await new Promise((resolve) => {
       const delayBetweenCharacters = 50; // Adjust the delay time between characters
       let currentCharacter = 0;
       let intervalId = setInterval(() => {
-        if (currentCharacter <= response.length) {
-          const partialResponse = response.slice(0, currentCharacter);
+        if (currentCharacter <= cleanedResponse.length) {
+          const partialResponse = cleanedResponse.slice(0, currentCharacter);
           setMessages((prevMessages) => [
             ...prevMessages.slice(0, -1),
             { text: partialResponse, user: false, tooltip: false },
@@ -221,13 +253,14 @@ const ChatbotComponent = (props) => {
           currentCharacter++;
         } else {
           clearInterval(intervalId);
-          resolve(response);
+          resolve(cleanedResponse);
         }
       }, delayBetweenCharacters);
     });
 
     const newAiMessage = { text: typedResponse, user: false, tooltip: false };
     setMessages((prevMessages) => [...prevMessages.slice(0, -1), newAiMessage]);
+    setTypeCompleted(true);
     if (response && mockData[0].offerDisplay && apiRes) {
       console.log("apiRespo", apiRes);
       setTimeout(() => {
@@ -345,43 +378,95 @@ const ChatbotComponent = (props) => {
                     style={{ fontSize: 20, padding: 8, display: "flex" }}
                   />
                 )}
-                {/* {displayOffer && !message.user && message.tooltip ? (
-                  <div ref={tooltipRef}>
-                    <Tooltip
-                      title={mockData[0].offer}
-                      arrow
-                      placement="left"
-                      open={tooltipOpen}
-                      onClose={() => setTooltipOpen(false)}
-                    >
-                      <IconButton onClick={handleTooltipToggle}>
-                        <InfoOutlinedIcon
-                          style={{ fontSize: 20, color: "#fff" }}
-                        />
-                      </IconButton>
-                      {formatMessage(message.text)}
-                    </Tooltip>
+                <div>
+                  <>{formatMessage(message.text)}</>
+                  <div>
+                    {message.user
+                      ? null
+                      : typeCompleted && (
+                          <div className="feedback-buttons">
+                            <IconButton
+                              onClick={() => handleFeedback(true, index)}
+                              className={
+                                feedbackStatus.liked ? "sparkling" : ""
+                              }
+                              style={{
+                                color: message.liked && "green",
+                                border: "none",
+                                fontSize: "22px",
+                              }}
+                            >
+                              👍
+                            </IconButton>
+                            <IconButton
+                              onClick={() => handleFeedback(false, index)}
+                              style={{
+                                color: message.disliked && "red",
+                                border: "none",
+                                fontSize: "22px",
+                              }}
+                            >
+                              👎
+                            </IconButton>
+                          </div>
+                        )}
                   </div>
-                ) : ( */}
-                  
-                {/* )} */}
-                <>{formatMessage(message.text)}</>
+                </div>
               </div>
             ))}
+
+            {/* {messages.map((message, index) => (
+              <>
+                {message.user ? null : (
+                 typeCompleted && <div className="feedback-buttons">
+                    <IconButton
+                      onClick={() => handleFeedback(true, index)}
+                      style={{
+                        color: message.liked && "green",
+                        border: "none",
+                        fontSize:"22px"
+                      }}
+                    >
+                      👍
+                    </IconButton>
+                    <IconButton
+                      onClick={() => handleFeedback(false, index)}
+                      style={{
+                        color: message.disliked && "red",
+                        border: "none",
+                        fontSize:"22px"
+                      }}
+                    >
+                      👎
+                    </IconButton>
+                  </div>
+                )}
+              </>
+            ))} */}
             <div ref={messagesEndRef}></div>
           </Paper>
 
           <div>
-          {displayOffer && (
-          <div className="offer-available-section" style={{ background: '#FFECB3', padding: '10px', marginBottom: '15px',marginTop:'10px', borderRadius: '8px' }}>
-            <Typography variant="body1" color="primary">
-              Offer Available
-            </Typography>
-            <Typography variant="body2" color="textPrimary">
-              {mockData[0].offer}
-            </Typography>
-          </div>
-        )}
+            {displayOffer && (
+              <div
+                className="offer-available-section"
+                style={{
+                  background: "#FFECB3",
+                  padding: "15px",
+                  marginBottom: "15px",
+                  marginTop: "10px",
+                  borderRadius: "8px",
+                  border: "2px solid #FF9800",
+                }}
+              >
+                <Typography variant="body1" color="textPrimary">
+                  <strong>Offer Available</strong>
+                </Typography>
+                <Typography variant="body2" color="textPrimary">
+                  {mockData[0].offer}
+                </Typography>
+              </div>
+            )}
             <form className="chatbot-input-form" onSubmit={handleSubmit}>
               <Box
                 sx={{

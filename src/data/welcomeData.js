@@ -1,7 +1,6 @@
 export const welcomeData = {
   scenario1: {
-    welcomeMessage:
-      "Experience the ease of switching your current account to us – seamless transitions, personalized services, and financial convenience designed with you in mind. Make the move today for a banking experience that fits your lifestyle.",
+    welcomeMessage: `To make payments to own account \n1. Select Payments \n2. Select to own account \n3. Check Eligibility  \n4. Submit payments \n5. Check balance on From and to accounts.`,
   },
 
   scenario2: {
@@ -15,8 +14,7 @@ export const welcomeData = {
   },
 
   scenario4: {
-    welcomeMessage:
-      "Hello! How can i assist you today..",
+    welcomeMessage: "Hello! How can i assist you today..",
   },
 
   scenario5: {
