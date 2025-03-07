@@ -1,13 +1,8 @@
 import React, { useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
 import "./css/App.css";
-// import IframeComponent from './IframeComponent'
-import ChatBotComponent from "./ChatbotComponent";
-import { Paper, TextField } from "@mui/material";
-import Idpanel from "./panels/Idpanel";
-import ProductsPanel from "./panels/ProductsPanel";
-import IvrPanel from "./panels/IvrPanel";
-import VerificationPanel from "./panels/VerificationPanel";
-import WhatsappComponent from "./WhatsappComponent";
+import AllPanels from "./AllPanels";
+import Feedback from "./panels/Feedback";
 
 function App() {
   // Function to get query parameter from the URL
@@ -23,18 +18,11 @@ function App() {
 
   return (
     <div className="container">
-      <div className="top">
-        <Idpanel scenario={scenario}></Idpanel>
-        <ProductsPanel scenario={scenario}></ProductsPanel>
-        <IvrPanel scenario={scenario}></IvrPanel>
-        <VerificationPanel scenario={scenario}></VerificationPanel>
-      </div>
-      <div className="iframe-container">
-        <iframe src="https://localhost:3000/lloyds.png" width={100}></iframe>
-      </div>
-
-      {/* ChatBot Component */}
-      <ChatBotComponent scenario={scenario} />
+      {/* Routes should be inside <Routes>, but no <Router> */}
+      <Routes>
+        <Route path="/" element={<AllPanels />} />
+        <Route path="/feedback" element={<Feedback />} />
+      </Routes>
     </div>
   );
 }
