@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import "./css/App.css";
 import AllPanels from "./AllPanels";
 import Feedback from "./panels/Feedback";
+import FeedbackNew from "./panels/FeedbackNew";
 
 function App() {
   // Function to get query parameter from the URL
@@ -22,6 +23,7 @@ function App() {
       <Routes>
         <Route path="/" element={<AllPanels />} />
         <Route path="/feedback" element={<Feedback />} />
+        <Route path="/feedback2" element={<FeedbackNew />} />
       </Routes>
     </div>
   );
