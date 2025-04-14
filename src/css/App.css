@@ -27,6 +27,14 @@ body, html {
   box-sizing: border-box;
 }
 
+.panelLogo {
+  width: 15%;
+  height: 100%;
+  border-bottom: 6px solid #006a4d;
+  border-right: 2px solid #006a4d;
+  box-sizing: border-box;
+  
+}
 .iframe-container {
   flex: 75%;
   overflow: hidden;

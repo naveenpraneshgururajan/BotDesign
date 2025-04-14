@@ -31,12 +31,12 @@ const verificationPaneldata = {
     },
     {
       icon: DragIndicatorIcon,
-      label: "SN Reg",
+      label: "SMS Reg",
       value: "No ",
     },
     {
       icon: RecordVoiceOverIcon,
-      label: "Voice Reg",
+      label: "Tone Used",
       value: "Registered",
     },
   ],
@@ -53,12 +53,12 @@ const verificationPaneldata = {
     },
     {
       icon: DragIndicatorIcon,
-      label: "SN Reg",
+      label: "SMS Reg",
       value: "No",
     },
     {
       icon: RecordVoiceOverIcon,
-      label: "Voice Reg",
+      label: "Tone Used",
       value: "Eligible",
     },
   ],
@@ -75,12 +75,12 @@ const verificationPaneldata = {
     },
     {
       icon: DragIndicatorIcon,
-      label: "SN Reg",
+      label: "SMS Reg",
       value: "Yes",
     },
     {
       icon: RecordVoiceOverIcon,
-      label: "Voice Reg",
+      label: "Tone Used",
       value: "In use",
     },
   ],
@@ -97,12 +97,12 @@ const verificationPaneldata = {
     },
     {
       icon: DragIndicatorIcon,
-      label: "SN Reg",
+      label: "SMS Reg",
       value: "No ",
     },
     {
       icon: RecordVoiceOverIcon,
-      label: "Voice Reg",
+      label: "Tone Used",
       value: "Not Eligible",
     },
   ],
@@ -119,12 +119,12 @@ const verificationPaneldata = {
     },
     {
       icon: DragIndicatorIcon,
-      label: "SN Reg",
+      label: "SMS Reg",
       value: "Yes ",
     },
     {
       icon: RecordVoiceOverIcon,
-      label: "Voice Reg",
+      label: "Tone Used",
       value: "Not Eligible",
     },
   ],
@@ -143,7 +143,7 @@ const productsPaneldata = {
     },
     {
       icon: SpaIcon,
-      label: "IPR",
+      label: "CUR",
       value: "Holder of the Product",
     },
 
@@ -166,7 +166,7 @@ const productsPaneldata = {
     },
     {
       icon: SpaIcon,
-      label: "IPR",
+      label: "CUR",
       value: "Authorised Card Holder",
     },
 
@@ -189,7 +189,7 @@ const productsPaneldata = {
     },
     {
       icon: SpaIcon,
-      label: "IPR",
+      label: "CUR",
       value: "Holder of the Product",
     },
 
@@ -212,7 +212,7 @@ const productsPaneldata = {
     },
     {
       icon: SpaIcon,
-      label: "IPR",
+      label: "CUR",
       value: "N/A",
     },
 
@@ -235,7 +235,7 @@ const productsPaneldata = {
     },
     {
       icon: SpaIcon,
-      label: "IPR",
+      label: "CUR",
       value: "Power of Attorney",
     },
 
@@ -278,7 +278,7 @@ const idPaneldata = {
     {
       icon: DateRangeIcon,
       label: "DOB",
-      value: "24-07-1984",
+      value: "24-07-1989",
     },
     {
       icon: PermIdentityIcon,
@@ -348,39 +348,39 @@ const ivrPaneldata = {
   scenario1: [
     {
       icon: AccessTimeIcon,
-      label: "Wait Time",
+      label: "Time On Hold",
       value: "00:00:15",
     },
     {
       icon: AltRouteIcon,
-      label: "BO Reason",
-      value: "361 - Overdraft Increase",
+      label: "Reason",
+      value: "101 - Switch Current account",
     },
     {
       icon: RingVolumeIcon,
-      label: "Call Status",
+      label: "Call Info",
       value: "ID in IVR ",
     },
     {
       icon: SettingsVoiceIcon,
       label: "Utterance",
-      value: "Increase my OD",
+      value: "Switch Account",
     },
   ],
   scenario2: [
     {
       icon: AccessTimeIcon,
-      label: "Wait Time",
+      label: "Time On Hold",
       value: "00:00:15",
     },
     {
       icon: AltRouteIcon,
-      label: "BO Reason",
+      label: "Reason",
       value: "712 - Credit Limit Increase",
     },
     {
       icon: RingVolumeIcon,
-      label: "Call Status",
+      label: "Call Info",
       value: "ID in IVR ",
     },
     {
@@ -392,17 +392,17 @@ const ivrPaneldata = {
   scenario3: [
     {
       icon: AccessTimeIcon,
-      label: "Wait Time",
+      label: "Time On Hold",
       value: "00:00:15",
     },
     {
       icon: AltRouteIcon,
-      label: "BO Reason",
+      label: "Reason",
       value: "211 - Current Account",
     },
     {
       icon: RingVolumeIcon,
-      label: "Call Status",
+      label: "Call Info",
       value: "ID in IVR ",
     },
     {
@@ -414,17 +414,17 @@ const ivrPaneldata = {
   scenario4: [
     {
       icon: AccessTimeIcon,
-      label: "Wait Time",
+      label: "Time On Hold",
       value: "00:00:15",
     },
     {
       icon: AltRouteIcon,
-      label: "BO Reason",
+      label: "Reason",
       value: "Unknown",
     },
     {
       icon: RingVolumeIcon,
-      label: "Call Status",
+      label: "Call Info",
       value: "Not Identified ",
     },
     {
@@ -436,23 +436,23 @@ const ivrPaneldata = {
   scenario5: [
     {
       icon: AccessTimeIcon,
-      label: "Wait Time",
+      label: "Time On Hold",
       value: "00:00:15",
     },
     {
       icon: AltRouteIcon,
-      label: "BO Reason",
-      value: "361 - Payment"
+      label: "Reason",
+      value: "361 - Payment Issue"
     },
     {
       icon: RingVolumeIcon,
-      label: "Call Status",
+      label: "Call Info",
       value: "ID in IVR ",
     },
     {
       icon: SettingsVoiceIcon,
       label: "Utterance",
-      value: "Bill Payment",
+      value: "Issue with Bill Payment",
     },
   ],
 };

@@ -1,31 +1,38 @@
 import React, { useRef, useEffect, useState } from "react";
 import axios from "axios";
-import "./Chatbot.css";
+import "./css/Chatbot.css";
 import { Button, TextField, Box, Paper, Typography } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import CloseIcon from "@mui/icons-material/Close";
 import SettingsSuggestOutlinedIcon from "@mui/icons-material/SettingsSuggestOutlined";
-import QuickreplyOutlinedIcon from "@mui/icons-material/QuickreplyOutlined";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
-import InfoIcon from "@mui/icons-material/Info";
 import SportsVolleyballOutlinedIcon from "@mui/icons-material/SportsVolleyballOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import SmartToyOutlinedIcon from "@mui/icons-material/SmartToyOutlined";
 import { chatBotdata } from "./data/chatbotData";
+import { welcomeData } from "./data/welcomeData";
+// import OfferAvailableSection from "./OfferAvailableSection";
+
 const ChatbotComponent = (props) => {
   var mockData = [];
+  var welcome;
   const { scenario } = props;
   if (scenario === 1) {
     mockData = chatBotdata.scenario1;
+    welcome = welcomeData.scenario1.welcomeMessage;
   } else if (scenario === 2) {
     mockData = chatBotdata.scenario2;
+    welcome = welcomeData.scenario2.welcomeMessage;
   } else if (scenario === 3) {
     mockData = chatBotdata.scenario3;
+    welcome = welcomeData.scenario3.welcomeMessage;
   } else if (scenario === 4) {
     mockData = chatBotdata.scenario4;
+    welcome = welcomeData.scenario4.welcomeMessage;
   } else if (scenario === 5) {
     mockData = chatBotdata.scenario5;
+    welcome = welcomeData.scenario5.welcomeMessage;
   }
 
   const [input, setInput] = useState("");
@@ -35,11 +42,32 @@ const ChatbotComponent = (props) => {
   const [tooltipOpen, setTooltipOpen] = useState(true);
   const [defaultMessageDisplayed, setDefaultMessageDisplayed] = useState(false);
   const tooltipRef = useRef(null);
+  const [feedbackStatus, setFeedbackStatus] = useState({
+    liked: false,
+    disliked: false,
+  });
+  const [typeCompleted, setTypeCompleted] = useState(false);
 
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
   var apiRes = true;
+
+  const handleFeedback = (isLike, index) => {
+    setFeedbackStatus({
+      liked: isLike && !feedbackStatus.liked,
+      disliked: !isLike && !feedbackStatus.disliked,
+    });
+
+    // You can update the state of messages based on the index
+    const updatedMessages = [...messages];
+    updatedMessages[index] = {
+      ...updatedMessages[index],
+      liked: isLike,
+      disliked: !isLike,
+    };
+    setMessages(updatedMessages);
+  };
 
   useEffect(() => {
     // Scroll to the bottom of the chat container
@@ -69,7 +97,7 @@ const ChatbotComponent = (props) => {
       setIsvisible(true);
 
       const welcomeMessage = {
-        text: "Hello! How can I assist you today?..",
+        text: `${welcome}`,
         user: false,
         tooltip: false,
       };
@@ -95,6 +123,7 @@ const ChatbotComponent = (props) => {
 
     const delay1 = 2000; // Adjust the delay time in milliseconds
     const timeoutId1 = setTimeout(openChatbotWithDelay, delay1);
+    if (timeoutId1) setTypeCompleted(true);
 
     // Clean up the timeout when the component is unmounted
     return () => clearTimeout(timeoutId1);
@@ -119,7 +148,15 @@ const ChatbotComponent = (props) => {
       await delay(2000);
       // Return the message after the delay
       return "Call back Scheduled.. We will reach you out on or before 28/01/2024";
+    } else if (userInput === "increase the customer credit card limit") {
+      // Wait for 2000 milliseconds (2 seconds)
+      apiRes = true;
+      // setDisplayOffer(false);
+      await delay(2000);
+      // Return the message after the delay
+      return "Congratulations! Your request to increase your credit limit has been approved. You now have more financial flexibility at your fingertips. Enjoy the enhanced purchasing power and make the most of your expanded credit limit. Thank you for choosing us to support your financial journey!";
     }
+
     const apiEndpoint =
       "https://aaraa-openai.openai.azure.com/openai/deployments/aaraa-gptdeployment/extensions/chat/completions?api-version=2023-07-01-preview";
     const headers = {
@@ -156,7 +193,7 @@ const ChatbotComponent = (props) => {
         },
         {
           role: "user",
-          content: "list products available in savings account",
+          content: `${userInput} in 2 lines`, //Replace input given in chat window
         },
       ],
       deployment: "aaraa-gptdeployment",
@@ -183,6 +220,13 @@ const ChatbotComponent = (props) => {
   const handleOpenBot = () => {
     return setIsvisible(true);
   };
+
+  // Add this function to your component
+  const removeDocTags = (text) => {
+    // Use regex to remove [doc1], [doc2], etc. patterns
+    return text.replace(/\[doc\d+\]/g, "");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!input.trim()) return;
@@ -192,13 +236,16 @@ const ChatbotComponent = (props) => {
     setMessages((prevMessages) => [...prevMessages, aiMessage]);
     const response = await chatWithGPT3(input);
 
+    // Remove [doc1], [doc2], etc. from the response
+    const cleanedResponse = removeDocTags(response);
+
     // Display AI message with typing effect
     const typedResponse = await new Promise((resolve) => {
       const delayBetweenCharacters = 50; // Adjust the delay time between characters
       let currentCharacter = 0;
       let intervalId = setInterval(() => {
-        if (currentCharacter <= response.length) {
-          const partialResponse = response.slice(0, currentCharacter);
+        if (currentCharacter <= cleanedResponse.length) {
+          const partialResponse = cleanedResponse.slice(0, currentCharacter);
           setMessages((prevMessages) => [
             ...prevMessages.slice(0, -1),
             { text: partialResponse, user: false, tooltip: false },
@@ -206,22 +253,23 @@ const ChatbotComponent = (props) => {
           currentCharacter++;
         } else {
           clearInterval(intervalId);
-          resolve(response);
+          resolve(cleanedResponse);
         }
       }, delayBetweenCharacters);
     });
 
     const newAiMessage = { text: typedResponse, user: false, tooltip: false };
     setMessages((prevMessages) => [...prevMessages.slice(0, -1), newAiMessage]);
+    setTypeCompleted(true);
     if (response && mockData[0].offerDisplay && apiRes) {
       console.log("apiRespo", apiRes);
       setTimeout(() => {
-        const newAiMessage1 = {
-          text: "Offer Available",
-          user: false,
-          tooltip: true,
-        };
-        setMessages((prevMessages) => [...prevMessages, newAiMessage1]);
+        // const newAiMessage1 = {
+        //   text: "Offer Available",
+        //   user: false,
+        //   tooltip: true,
+        // };
+        // setMessages((prevMessages) => [...prevMessages, newAiMessage1]);
         setDisplayOffer(true);
       }, 2000);
     }
@@ -245,9 +293,12 @@ const ChatbotComponent = (props) => {
       "Mortgage",
       "Savings",
       "youth",
+      "£2500",
       "student",
       "Everyday",
       "joint",
+      "eligible",
+      "£1000",
     ];
 
     const words = originalString.split(/\s+/);
@@ -327,63 +378,128 @@ const ChatbotComponent = (props) => {
                     style={{ fontSize: 20, padding: 8, display: "flex" }}
                   />
                 )}
-                {displayOffer && !message.user && message.tooltip ? (
-                  <div ref={tooltipRef}>
-                    <Tooltip
-                      title={mockData[0].offer}
-                      arrow
-                      placement="left"
-                      open={tooltipOpen}
-                      onClose={() => setTooltipOpen(false)}
-                    >
-                      <IconButton onClick={handleTooltipToggle}>
-                        <InfoOutlinedIcon
-                          style={{ fontSize: 20, color: "#fff" }}
-                        />
-                      </IconButton>
-                      {formatMessage(message.text)}
-                    </Tooltip>
-                  </div>
-                ) : (
+                <div>
                   <>{formatMessage(message.text)}</>
-                )}
+                  <div>
+                    {message.user
+                      ? null
+                      : typeCompleted && (
+                          <div className="feedback-buttons">
+                            <IconButton
+                              onClick={() => handleFeedback(true, index)}
+                              className={
+                                feedbackStatus.liked ? "sparkling" : ""
+                              }
+                              style={{
+                                color: message.liked && "green",
+                                border: "none",
+                                fontSize: "22px",
+                              }}
+                            >
+                              👍
+                            </IconButton>
+                            <IconButton
+                              onClick={() => handleFeedback(false, index)}
+                              style={{
+                                color: message.disliked && "red",
+                                border: "none",
+                                fontSize: "22px",
+                              }}
+                            >
+                              👎
+                            </IconButton>
+                          </div>
+                        )}
+                  </div>
+                </div>
               </div>
             ))}
+
+            {/* {messages.map((message, index) => (
+              <>
+                {message.user ? null : (
+                 typeCompleted && <div className="feedback-buttons">
+                    <IconButton
+                      onClick={() => handleFeedback(true, index)}
+                      style={{
+                        color: message.liked && "green",
+                        border: "none",
+                        fontSize:"22px"
+                      }}
+                    >
+                      👍
+                    </IconButton>
+                    <IconButton
+                      onClick={() => handleFeedback(false, index)}
+                      style={{
+                        color: message.disliked && "red",
+                        border: "none",
+                        fontSize:"22px"
+                      }}
+                    >
+                      👎
+                    </IconButton>
+                  </div>
+                )}
+              </>
+            ))} */}
             <div ref={messagesEndRef}></div>
           </Paper>
 
-          <form className="chatbot-input-form" onSubmit={handleSubmit}>
-            <Box
-              sx={{
-                width: 700,
-                maxWidth: "100%",
-                boxShadow: "#024731",
-              }}
-            >
-              <TextField
-                fullWidth
-                hiddenLabel
-                id="outlined"
-                variant="outlined"
-                placeholder="Type your querry..."
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                inputRef={inputRef}
-                InputProps={{
-                  style: { color: "#024731" },
+          <div>
+            {displayOffer && (
+              <div
+                className="offer-available-section"
+                style={{
+                  background: "#FFECB3",
+                  padding: "15px",
+                  marginBottom: "15px",
+                  marginTop: "10px",
+                  borderRadius: "8px",
+                  border: "2px solid #FF9800",
                 }}
-              />
-            </Box>
+              >
+                <Typography variant="body1" color="textPrimary">
+                  <strong>Offer Available</strong>
+                </Typography>
+                <Typography variant="body2" color="textPrimary">
+                  {mockData[0].offer}
+                </Typography>
+              </div>
+            )}
+            <form className="chatbot-input-form" onSubmit={handleSubmit}>
+              <Box
+                sx={{
+                  width: 700,
+                  maxWidth: "100%",
+                  boxShadow: "#024731",
+                }}
+              >
+                <TextField
+                  fullWidth
+                  hiddenLabel
+                  id="outlined"
+                  variant="outlined"
+                  placeholder="Type your querry..."
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  inputRef={inputRef}
+                  InputProps={{
+                    style: { color: "#024731" },
+                  }}
+                />
+              </Box>
 
-            <Button
-              onClick={handleSubmit}
-              variant="contained"
-              style={{ background: "#024731", paddingRight: 5, width: "35%" }}
-              endIcon={<SendIcon style={{ paddingRight: 10 }} />}
-            >
-              Send
-            </Button>
-          </form>
+              <Button
+                onClick={handleSubmit}
+                variant="contained"
+                style={{ background: "#024731", paddingRight: 5, width: "35%" }}
+                endIcon={<SendIcon style={{ paddingRight: 10 }} />}
+              >
+                Send
+              </Button>
+            </form>
+          </div>
         </div>
       ) : (
         <div onClick={handleOpenBot}>
