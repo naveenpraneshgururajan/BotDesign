@@ -1,162 +1,254 @@
 import React, { useRef, useEffect, useState } from "react";
 import axios from "axios";
-import "./css/Chatbot.css";
-import { Button, TextField, Box, Paper, Typography } from "@mui/material";
+import {
+  Button,
+  TextField,
+  Paper,
+  Typography,
+  IconButton,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
 import SendIcon from "@mui/icons-material/Send";
 import CloseIcon from "@mui/icons-material/Close";
 import SettingsSuggestOutlinedIcon from "@mui/icons-material/SettingsSuggestOutlined";
-import Tooltip from "@mui/material/Tooltip";
-import IconButton from "@mui/material/IconButton";
-import SportsVolleyballOutlinedIcon from "@mui/icons-material/SportsVolleyballOutlined";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import SmartToyOutlinedIcon from "@mui/icons-material/SmartToyOutlined";
-import { chatBotdata } from "./data/chatbotData";
-import { welcomeData } from "./data/welcomeData";
-// import OfferAvailableSection from "./OfferAvailableSection";
 
-const ChatbotComponent = (props) => {
-  var mockData = [];
-  var welcome;
-  const { scenario } = props;
-  if (scenario === 1) {
-    mockData = chatBotdata.scenario1;
-    welcome = welcomeData.scenario1.welcomeMessage;
-  } else if (scenario === 2) {
-    mockData = chatBotdata.scenario2;
-    welcome = welcomeData.scenario2.welcomeMessage;
-  } else if (scenario === 3) {
-    mockData = chatBotdata.scenario3;
-    welcome = welcomeData.scenario3.welcomeMessage;
-  } else if (scenario === 4) {
-    mockData = chatBotdata.scenario4;
-    welcome = welcomeData.scenario4.welcomeMessage;
-  } else if (scenario === 5) {
-    mockData = chatBotdata.scenario5;
-    welcome = welcomeData.scenario5.welcomeMessage;
-  }
+// Define styles using styled API
+const ChatbotContainer = styled("div")(({ theme }) => ({
+  position: "fixed",
+  bottom: 20,
+  right: 20,
+  width: 450,
+  border: "1px solid #ccc",
+  borderRadius: 8,
+  padding: 16,
+  backgroundColor: "#f8f8f8",
+  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+  opacity: 0,
+  visibility: "hidden",
+  transition: "opacity 0.5s ease-in, visibility 0.5s ease-in",
+  "&.visible": {
+    opacity: 1,
+    visibility: "visible",
+  },
+}));
+
+const ChatbotHeader = styled(Paper)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  background: "#024731",
+  padding: 15,
+  marginBottom: 20,
+  color: "#fff",
+  position: "relative",
+}));
+
+const HeaderIcon = styled(SettingsSuggestOutlinedIcon)(({ theme }) => ({
+  fontSize: "2rem",
+  marginRight: 10,
+  color: "#fff",
+}));
+
+const HeaderTitle = styled(Typography)(({ theme }) => ({
+  flexGrow: 1,
+  textAlign: "center",
+  color: "#fff",
+}));
+
+const CloseButtonStyled = styled(IconButton)(({ theme }) => ({
+  position: "absolute",
+  top: 10,
+  right: 10,
+  cursor: "pointer",
+  color: "#fff",
+  "&:hover": {
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: "50%",
+  },
+}));
+
+const MessagesContainer = styled(Paper)(({ theme }) => ({
+  height: 400,
+  overflowY: "auto",
+  padding: 8,
+  display: "flex",
+  flexDirection: "column",
+  marginBottom: 16,
+}));
+
+const Message = styled("div")(({ theme, isUser }) => ({
+  margin: "4px 0",
+  padding: 8,
+  borderRadius: 4,
+  maxWidth: "80%",
+  lineHeight: 1.5,
+  backgroundColor: isUser ? "#024731" : "#006a4d",
+  color: "#fff",
+  alignSelf: isUser ? "flex-end" : "flex-start",
+  textAlign: isUser ? "right" : "left",
+  display: "flex",
+  alignItems: "flex-start",
+}));
+
+const BotIcon = styled("span")(({ theme }) => ({
+  marginRight: 8,
+}));
+
+const InputForm = styled("form")(({ theme }) => ({
+  display: "flex",
+  gap: 8,
+}));
+
+const SendButtonStyled = styled(Button)(({ theme }) => ({
+  backgroundColor: "#024731",
+  color: "#fff",
+  whiteSpace: "nowrap",
+  "&:hover": {
+    backgroundColor: "#01361f",
+  },
+}));
+
+const FeedbackButtons = styled("div")(({ theme }) => ({
+  display: "flex",
+  justifyContent: "flex-end",
+  marginTop: 4,
+}));
+
+const FeedbackButtonStyled = styled(IconButton)(({ theme, active }) => ({
+  minWidth: "auto",
+  padding: 4,
+  color: "#fff",
+  animation: active ? "sparkling 0.5s ease-out" : "none",
+  "@keyframes sparkling": {
+    "0%": { transform: "scale(1)" },
+    "50%": { transform: "scale(1.2)" },
+    "100%": { transform: "scale(1)" },
+  },
+}));
+
+const ChatbotToggle = styled("div")(({ theme }) => ({
+  position: "fixed",
+  bottom: 20,
+  right: 20,
+  cursor: "pointer",
+}));
+
+const ChatIcon = styled(SmartToyOutlinedIcon)(({ theme }) => ({
+  fontSize: "3rem",
+  color: "#024731",
+}));
+
+const OfferBanner = styled("div")(({ theme }) => ({
+  backgroundColor: "#ffecb3",
+  border: "1px solid #ff9800",
+  borderRadius: 8,
+  padding: 10,
+  marginBottom: 16,
+  textAlign: "center",
+}));
+
+const OfferTitle = styled(Typography)(({ theme }) => ({
+  fontWeight: "bold",
+}));
+
+const ChatbotComponent = ({ scenario = 1 }) => {
+  // Configuration based on scenario
+  const getScenarioData = () => {
+    const chatBotdata = {
+      scenario1: [
+        { offerDisplay: true, offer: "Special offer for scenario 1" },
+      ],
+      scenario2: [
+        { offerDisplay: true, offer: "Special offer for scenario 2" },
+      ],
+      scenario3: [
+        { offerDisplay: true, offer: "Special offer for scenario 3" },
+      ],
+      scenario4: [
+        { offerDisplay: true, offer: "Special offer for scenario 4" },
+      ],
+      scenario5: [
+        { offerDisplay: true, offer: "Special offer for scenario 5" },
+      ],
+    };
+
+    const welcomeData = {
+      scenario1: { welcomeMessage: "Welcome to scenario 1" },
+      scenario2: { welcomeMessage: "Welcome to scenario 2" },
+      scenario3: { welcomeMessage: "Welcome to scenario 3" },
+      scenario4: { welcomeMessage: "Welcome to scenario 4" },
+      scenario5: { welcomeMessage: "Welcome to scenario 5" },
+    };
+
+    return {
+      mockData: chatBotdata[`scenario${scenario}`] || chatBotdata.scenario1,
+      welcome:
+        welcomeData[`scenario${scenario}`]?.welcomeMessage ||
+        "Welcome to our chatbot!",
+    };
+  };
+
+  const { mockData, welcome } = getScenarioData();
 
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
-  const [isVisible, setIsvisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [displayOffer, setDisplayOffer] = useState(false);
-  const [tooltipOpen, setTooltipOpen] = useState(true);
-  const [defaultMessageDisplayed, setDefaultMessageDisplayed] = useState(false);
-  const tooltipRef = useRef(null);
-  const [feedbackStatus, setFeedbackStatus] = useState({
-    liked: false,
-    disliked: false,
-  });
-  const [typeCompleted, setTypeCompleted] = useState(false);
+  const [feedbackStatus, setFeedbackStatus] = useState({});
 
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  var apiRes = true;
-
-  const handleFeedback = (isLike, index) => {
-    setFeedbackStatus({
-      liked: isLike && !feedbackStatus.liked,
-      disliked: !isLike && !feedbackStatus.disliked,
-    });
-
-    // You can update the state of messages based on the index
-    const updatedMessages = [...messages];
-    updatedMessages[index] = {
-      ...updatedMessages[index],
-      liked: isLike,
-      disliked: !isLike,
-    };
-    setMessages(updatedMessages);
-  };
-
+  // Scroll to bottom whenever messages change
   useEffect(() => {
-    // Scroll to the bottom of the chat container
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages]); // Trigger the effect whenever messages change
+  }, [messages]);
 
+  // Open chatbot with initial message on load
   useEffect(() => {
-    // Add event listener to close Tooltip on outside click
-    const handleClickOutside = (event) => {
-      if (tooltipRef.current && !tooltipRef.current.contains(event.target)) {
-        setTooltipOpen(false);
-      }
-    };
-    // Attach the event listener
-    document.addEventListener("mousedown", handleClickOutside);
+    const openChatbot = async () => {
+      setIsVisible(true);
 
-    // Clean up the event listener on component unmount
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+      // Type out welcome message with animation
+      const welcomeMessage = { text: welcome, isUser: false };
+      let typedMessage = "";
 
-  useEffect(() => {
-    const openChatbotWithDelay = async () => {
-      setIsvisible(true);
-
-      const welcomeMessage = {
-        text: `${welcome}`,
-        user: false,
-        tooltip: false,
-      };
-
-      let welcomeMessageWithTyping = "";
       for (let i = 0; i < welcomeMessage.text.length; i++) {
-        welcomeMessageWithTyping += welcomeMessage.text[i];
-        setMessages((prevMessages) => [
-          ...prevMessages.slice(0, -1),
-          { ...welcomeMessage, text: welcomeMessageWithTyping },
+        typedMessage += welcomeMessage.text[i];
+        setMessages((prev) => [
+          ...prev.slice(0, -1),
+          { ...welcomeMessage, text: typedMessage },
         ]);
-        await new Promise((resolve) => setTimeout(resolve, 50)); // Adjust the delay time between characters
+        await new Promise((resolve) => setTimeout(resolve, 50));
       }
 
-      // Add the complete message to the messages state
-      setMessages((prevMessages) => [
-        ...prevMessages.slice(0, -1),
-        welcomeMessage,
-      ]);
-      // Set the state to indicate that the default message is displayed
-      setDefaultMessageDisplayed(true);
+      setMessages((prev) => [...prev.slice(0, -1), welcomeMessage]);
+
+      // Focus on input field
+      setTimeout(() => {
+        if (inputRef.current) inputRef.current.focus();
+      }, 500);
     };
 
-    const delay1 = 2000; // Adjust the delay time in milliseconds
-    const timeoutId1 = setTimeout(openChatbotWithDelay, delay1);
-    if (timeoutId1) setTypeCompleted(true);
+    setTimeout(openChatbot, 1000);
+  }, [welcome]);
 
-    // Clean up the timeout when the component is unmounted
-    return () => clearTimeout(timeoutId1);
-  }, []); // Empty dependency array ensures the effect runs only once on mount
-
-  useEffect(() => {
-    // Focus on the text box when the component mounts
-    if (isVisible && defaultMessageDisplayed) {
-      inputRef.current.focus();
-    }
-  }, [isVisible, defaultMessageDisplayed]);
-
-  function delay(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
+  // Helper function for API responses
   const chatWithGPT3 = async (userInput) => {
+    // Special case handling
     if (userInput === "offer accepted please schedule a call back") {
-      // Wait for 2000 milliseconds (2 seconds)
-      apiRes = false;
-      // setDisplayOffer(false);
-      await delay(2000);
-      // Return the message after the delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       return "Call back Scheduled.. We will reach you out on or before 28/01/2024";
-    } else if (userInput === "increase the customer credit card limit") {
-      // Wait for 2000 milliseconds (2 seconds)
-      apiRes = true;
-      // setDisplayOffer(false);
-      await delay(2000);
-      // Return the message after the delay
-      return "Congratulations! Your request to increase your credit limit has been approved. You now have more financial flexibility at your fingertips. Enjoy the enhanced purchasing power and make the most of your expanded credit limit. Thank you for choosing us to support your financial journey!";
     }
 
+    if (userInput === "increase the customer credit card limit") {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return "Congratulations! Your request to increase your credit limit has been approved. You now have more financial flexibility at your fingertips.";
+    }
+
+    // API call
     const apiEndpoint =
       "https://aaraa-openai.openai.azure.com/openai/deployments/aaraa-gptdeployment/extensions/chat/completions?api-version=2023-07-01-preview";
     const headers = {
@@ -171,17 +263,12 @@ const ChatbotComponent = (props) => {
           parameters: {
             endpoint: "https://aaraa-search.search.windows.net",
             indexName: "aaraa-index",
-            semanticConfiguration: null,
-            queryType: "vectorSimpleHybrid",
-            fieldsMapping: {},
-            inScope: true,
-            roleInformation:
-              "You are an AI assistant that helps people find information from Lloyds knowledge base.",
-            filter: null,
-            strictness: 3,
-            topNDocuments: 5,
             key: "YpPWDN4jr9FD9Ict8kvMSaaVY0yaTWoFU9AgcamZMDAzSeB1ipsO",
             embeddingDeploymentName: "aaraa-embedding",
+            queryType: "vectorSimpleHybrid",
+            strictness: 3,
+            topNDocuments: 5,
+            inScope: true,
           },
         },
       ],
@@ -191,98 +278,68 @@ const ChatbotComponent = (props) => {
           content:
             "You are an AI assistant that helps people find information.",
         },
-        {
-          role: "user",
-          content: `${userInput} in 2 lines`, //Replace input given in chat window
-        },
+        { role: "user", content: `${userInput} in 2 lines` },
       ],
       deployment: "aaraa-gptdeployment",
       temperature: 0,
-      top_p: 1,
       max_tokens: 800,
-      stop: null,
-      stream: false,
     };
+
     try {
-      var response = await axios.post(apiEndpoint, data, { headers });
-      response = response.data.choices[0].messages[1].content;
-      console.log("Checking the res", response);
-      apiRes = true;
-      return response;
+      const response = await axios.post(apiEndpoint, data, { headers });
+      return response.data.choices[0].messages[1].content;
     } catch (error) {
-      return "Error in retriving information";
+      return "Error in retrieving information";
     }
   };
 
-  const handleClose = () => {
-    return setIsvisible(false);
-  };
-  const handleOpenBot = () => {
-    return setIsvisible(true);
-  };
-
-  // Add this function to your component
-  const removeDocTags = (text) => {
-    // Use regex to remove [doc1], [doc2], etc. patterns
-    return text.replace(/\[doc\d+\]/g, "");
-  };
-
+  // Form submission handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!input.trim()) return;
-    const userMessage = { text: input, user: true, tooltip: false };
-    setMessages((prevMessages) => [...prevMessages, userMessage]);
-    const aiMessage = { text: "...", user: false, tooltip: false };
-    setMessages((prevMessages) => [...prevMessages, aiMessage]);
-    const response = await chatWithGPT3(input);
 
-    // Remove [doc1], [doc2], etc. from the response
-    const cleanedResponse = removeDocTags(response);
+    // Add user message
+    const userMessage = { text: input, isUser: true };
+    setMessages((prev) => [...prev, userMessage]);
 
-    // Display AI message with typing effect
-    const typedResponse = await new Promise((resolve) => {
-      const delayBetweenCharacters = 50; // Adjust the delay time between characters
-      let currentCharacter = 0;
-      let intervalId = setInterval(() => {
-        if (currentCharacter <= cleanedResponse.length) {
-          const partialResponse = cleanedResponse.slice(0, currentCharacter);
-          setMessages((prevMessages) => [
-            ...prevMessages.slice(0, -1),
-            { text: partialResponse, user: false, tooltip: false },
-          ]);
-          currentCharacter++;
-        } else {
-          clearInterval(intervalId);
-          resolve(cleanedResponse);
-        }
-      }, delayBetweenCharacters);
-    });
+    // Add placeholder for AI response
+    setMessages((prev) => [...prev, { text: "...", isUser: false }]);
 
-    const newAiMessage = { text: typedResponse, user: false, tooltip: false };
-    setMessages((prevMessages) => [...prevMessages.slice(0, -1), newAiMessage]);
-    setTypeCompleted(true);
-    if (response && mockData[0].offerDisplay && apiRes) {
-      console.log("apiRespo", apiRes);
-      setTimeout(() => {
-        // const newAiMessage1 = {
-        //   text: "Offer Available",
-        //   user: false,
-        //   tooltip: true,
-        // };
-        // setMessages((prevMessages) => [...prevMessages, newAiMessage1]);
-        setDisplayOffer(true);
-      }, 2000);
+    // Get AI response
+    let response = await chatWithGPT3(input);
+
+    // Clean response by removing [doc1], [doc2], etc.
+    response = response.replace(/\[doc\d+\]/g, "");
+
+    // Type out AI response with animation
+    for (let i = 0; i <= response.length; i++) {
+      const partialResponse = response.slice(0, i);
+      setMessages((prev) => [
+        ...prev.slice(0, -1),
+        { text: partialResponse, isUser: false },
+      ]);
+      await new Promise((resolve) => setTimeout(resolve, 20));
     }
+
+    // Check if we should display an offer
+    if (mockData?.[0]?.offerDisplay) {
+      setTimeout(() => setDisplayOffer(true), 1000);
+    }
+
     setInput("");
   };
 
-  const handleTooltipToggle = () => {
-    setTooltipOpen((prev) => !prev);
+  // Feedback handler
+  const handleFeedback = (isLike, index) => {
+    setFeedbackStatus((prev) => ({
+      ...prev,
+      [index]: isLike ? "liked" : "disliked",
+    }));
   };
 
+  // Format message to bold certain keywords
   const formatMessage = (message) => {
-    const originalString = message;
-    const targetPhrases = [
+    const keywords = [
       "Error",
       "information",
       "Current",
@@ -301,215 +358,94 @@ const ChatbotComponent = (props) => {
       "£1000",
     ];
 
-    const words = originalString.split(/\s+/);
-
-    let resultString = "";
-
-    words.forEach((word, index) => {
-      const isTargetPhrase = targetPhrases.some(
-        (phrase) => phrase.toLowerCase() === word.toLowerCase()
-      );
-
-      resultString +=
-        (index > 0 ? " " : "") + (isTargetPhrase ? `**${word}**` : word);
-    });
-
-    return resultString;
+    return message
+      .split(/\s+/)
+      .map((word, i) =>
+        keywords.some((kw) => kw.toLowerCase() === word.toLowerCase())
+          ? `${i > 0 ? " " : ""}**${word}**`
+          : `${i > 0 ? " " : ""}${word}`
+      )
+      .join("");
   };
 
   return (
     <>
       {isVisible ? (
-        <div className={`chatbot-container${isVisible ? " visible" : ""}`}>
-          {/* Heading Section */}
-          <Paper
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-around",
-              background: "#024731",
-              padding: "15px",
-              textAlign: "center",
-              marginBottom: "20px",
-            }}
-          >
-            <SettingsSuggestOutlinedIcon
-              style={{
-                fontSize: 50,
-                color: "#FFF",
-                display: "flex",
-                alignItems: "flex-start",
-              }}
-            ></SettingsSuggestOutlinedIcon>
-            <Typography
-              variant="h2"
-              style={{
-                color: "#FFF",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                marginRight: "15%",
-              }}
-            >
-              Colleague Assist
-            </Typography>
-            <div className="closeButton" onClick={handleClose}>
-              <CloseIcon
-                style={{
-                  position: "absolute",
-                  top: 30,
-                  right: 30,
-                  fontSize: 30,
-                  color: "#ffffff",
-                }}
-              ></CloseIcon>
-            </div>
-          </Paper>
-          <Paper className="chatbot-messages">
+        <ChatbotContainer className={isVisible ? "visible" : ""}>
+          {/* Header */}
+          <ChatbotHeader>
+            <HeaderIcon />
+            <HeaderTitle variant="h5">Colleague Assist</HeaderTitle>
+            <CloseButtonStyled onClick={() => setIsVisible(false)}>
+              <CloseIcon />
+            </CloseButtonStyled>
+          </ChatbotHeader>
+
+          {/* Messages */}
+          <MessagesContainer>
             {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`message ${
-                  message.user ? "user-message" : "ai-message"
-                }`}
-              >
-                {message.user ? null : (
-                  <SportsVolleyballOutlinedIcon
-                    style={{ fontSize: 20, padding: 8, display: "flex" }}
-                  />
-                )}
+              <Message key={index} isUser={message.isUser}>
+                {!message.isUser && <BotIcon>🤖</BotIcon>}
                 <div>
-                  <>{formatMessage(message.text)}</>
-                  <div>
-                    {message.user
-                      ? null
-                      : typeCompleted && (
-                          <div className="feedback-buttons">
-                            <IconButton
-                              onClick={() => handleFeedback(true, index)}
-                              className={
-                                feedbackStatus.liked ? "sparkling" : ""
-                              }
-                              style={{
-                                color: message.liked && "green",
-                                border: "none",
-                                fontSize: "22px",
-                              }}
-                            >
-                              👍
-                            </IconButton>
-                            <IconButton
-                              onClick={() => handleFeedback(false, index)}
-                              style={{
-                                color: message.disliked && "red",
-                                border: "none",
-                                fontSize: "22px",
-                              }}
-                            >
-                              👎
-                            </IconButton>
-                          </div>
-                        )}
-                  </div>
+                  <div>{formatMessage(message.text)}</div>
+
+                  {/* Feedback buttons for AI messages */}
+                  {!message.isUser && (
+                    <FeedbackButtons>
+                      <FeedbackButtonStyled
+                        active={feedbackStatus[index] === "liked"}
+                        onClick={() => handleFeedback(true, index)}
+                      >
+                        👍
+                      </FeedbackButtonStyled>
+                      <FeedbackButtonStyled
+                        active={feedbackStatus[index] === "disliked"}
+                        onClick={() => handleFeedback(false, index)}
+                      >
+                        👎
+                      </FeedbackButtonStyled>
+                    </FeedbackButtons>
+                  )}
                 </div>
-              </div>
+              </Message>
             ))}
+            <div ref={messagesEndRef} />
+          </MessagesContainer>
 
-            {/* {messages.map((message, index) => (
-              <>
-                {message.user ? null : (
-                 typeCompleted && <div className="feedback-buttons">
-                    <IconButton
-                      onClick={() => handleFeedback(true, index)}
-                      style={{
-                        color: message.liked && "green",
-                        border: "none",
-                        fontSize:"22px"
-                      }}
-                    >
-                      👍
-                    </IconButton>
-                    <IconButton
-                      onClick={() => handleFeedback(false, index)}
-                      style={{
-                        color: message.disliked && "red",
-                        border: "none",
-                        fontSize:"22px"
-                      }}
-                    >
-                      👎
-                    </IconButton>
-                  </div>
-                )}
-              </>
-            ))} */}
-            <div ref={messagesEndRef}></div>
-          </Paper>
+          {/* Special offer section */}
+          {displayOffer && (
+            <OfferBanner>
+              <OfferTitle variant="body1">Offer Available</OfferTitle>
+              <Typography variant="body2">{mockData[0].offer}</Typography>
+            </OfferBanner>
+          )}
 
-          <div>
-            {displayOffer && (
-              <div
-                className="offer-available-section"
-                style={{
-                  background: "#FFECB3",
-                  padding: "15px",
-                  marginBottom: "15px",
-                  marginTop: "10px",
-                  borderRadius: "8px",
-                  border: "2px solid #FF9800",
-                }}
-              >
-                <Typography variant="body1" color="textPrimary">
-                  <strong>Offer Available</strong>
-                </Typography>
-                <Typography variant="body2" color="textPrimary">
-                  {mockData[0].offer}
-                </Typography>
-              </div>
-            )}
-            <form className="chatbot-input-form" onSubmit={handleSubmit}>
-              <Box
-                sx={{
-                  width: 700,
-                  maxWidth: "100%",
-                  boxShadow: "#024731",
-                }}
-              >
-                <TextField
-                  fullWidth
-                  hiddenLabel
-                  id="outlined"
-                  variant="outlined"
-                  placeholder="Type your querry..."
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  inputRef={inputRef}
-                  InputProps={{
-                    style: { color: "#024731" },
-                  }}
-                />
-              </Box>
-
-              <Button
-                onClick={handleSubmit}
-                variant="contained"
-                style={{ background: "#024731", paddingRight: 5, width: "35%" }}
-                endIcon={<SendIcon style={{ paddingRight: 10 }} />}
-              >
-                Send
-              </Button>
-            </form>
-          </div>
-        </div>
+          {/* Input form */}
+          <InputForm onSubmit={handleSubmit}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              placeholder="Type your query..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              inputRef={inputRef}
+            />
+            <SendButtonStyled
+              type="submit"
+              variant="contained"
+              endIcon={<SendIcon />}
+            >
+              Send
+            </SendButtonStyled>
+          </InputForm>
+        </ChatbotContainer>
       ) : (
-        <div onClick={handleOpenBot}>
-          <SmartToyOutlinedIcon
-            style={{ fontSize: 50, color: " #024731" }}
-            className="chatIcon"
-          ></SmartToyOutlinedIcon>
-        </div>
+        <ChatbotToggle onClick={() => setIsVisible(true)}>
+          <ChatIcon />
+        </ChatbotToggle>
       )}
     </>
   );
 };
+
 export default ChatbotComponent;
