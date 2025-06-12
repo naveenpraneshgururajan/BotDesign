@@ -7,6 +7,7 @@ import ProductsPanel from "./panels/ProductsPanel";
 import IvrPanel from "./panels/IvrPanel";
 import VerificationPanel from "./panels/VerificationPanel";
 import LogoPanel from "./panels/LogoPanel";
+import ReportStrip from "./ReportStrip";
 
 function AllPanels() {
   // Function to get query parameter from the URL
@@ -37,6 +38,7 @@ function AllPanels() {
 
       {/* ChatBot Component */}
       <ChatBotComponent scenario={scenario} />
+      <ReportStrip />
     </div>
   );
 }
