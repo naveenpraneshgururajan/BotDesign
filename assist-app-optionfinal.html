@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colleague Assist - Professional Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            height: 100vh;
+            overflow: hidden;
+            color: #2c3e50;
+        }
+
+        .dashboard-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Header */
+        .top-header {
+            background: #00594c;
+            padding: 12px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .app-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #006f5f 0%, #00a693 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .app-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .search-bar {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px 16px;
+            width: 350px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-bar::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .agent-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #00a693;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Customer Info Bar */
+        .customer-info-bar {
+            background: white;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e1e8ed;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .customer-details {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .customer-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00594c 0%, #00a693 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .customer-info h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .customer-meta {
+            font-size: 13px;
+            color: #7f8c8d;
+        }
+
+        .status-badges {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #28a745;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1.8fr 1fr;
+            gap: 15px;
+            padding: 15px 30px;
+            overflow: hidden;
+        }
+
+        /* Column Styles */
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid #e1e8ed;
+        }
+
+        .card-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e1e8ed;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-icon {
+            font-size: 18px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .card-action {
+            background: transparent;
+            border: none;
+            color: #00594c;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+        }
+
+        .card-body {
+            padding: 16px;
+        }
+
+        /* Smart Detection Card */
+        .detection-alert {
+            background: linear-gradient(135deg, #e8f5f3 0%, #d4f1e8 100%);
+            border: 2px solid #00a693;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .detection-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #006f5f;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .detection-question {
+            font-size: 13px;
+            color: #2c3e50;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        /* Sentiment Meter */
+        .sentiment-section {
+            margin-top: 12px;
+        }
+
+        .sentiment-label {
+            font-size: 11px;
+            color: #7f8c8d;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .sentiment-bar {
+            height: 6px;
+            background: #e1e8ed;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .sentiment-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745 0%, #ffc107 50%, #dc3545 100%);
+            width: 75%;
+            transition: width 0.3s ease;
+        }
+
+        .sentiment-text {
+            margin-top: 5px;
+            font-size: 11px;
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        /* Suggestion Cards */
+        .suggestion-item {
+            background: #f8f9fa;
+            border: 1px solid #e1e8ed;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .suggestion-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .suggestion-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .suggestion-number {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #00594c;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .suggestion-method {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+            flex: 1;
+        }
+
+        .suggestion-text {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .suggestion-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #00594c;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #004a3d;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #00594c;
+            border: 1px solid #00594c;
+        }
+
+        .btn-secondary:hover {
+            background: #e8f5f3;
+        }
+
+        /* Timeline */
+        .timeline-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .timeline-item:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            left: 16px;
+            top: 30px;
+            width: 2px;
+            height: calc(100% + 2px);
+            background: #e1e8ed;
+        }
+
+        .timeline-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #f8f9fa;
+            border: 2px solid #e1e8ed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+            z-index: 1;
+            position: relative;
+        }
+
+        .timeline-icon.active {
+            background: #00594c;
+            border-color: #00594c;
+            color: white;
+        }
+
+        .timeline-content {
+            flex: 1;
+            padding-top: 0;
+        }
+
+        .timeline-time {
+            font-size: 10px;
+            color: #7f8c8d;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .timeline-title {
+            font-size: 12px;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .timeline-text {
+            font-size: 11px;
+            color: #7f8c8d;
+            line-height: 1.4;
+        }
+
+        /* Info Row */
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 12px;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #00594c 0%, #00a693 100%);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Feedback Section */
+        .feedback-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .feedback-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid #e1e8ed;
+            background: white;
+            cursor: pointer;
+            font-size: 24px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feedback-btn:hover {
+            transform: scale(1.1);
+            border-color: #00594c;
+        }
+
+        .feedback-btn.active {
+            background: #00594c;
+            border-color: #00594c;
+            transform: scale(1.1);
+        }
+
+        .feedback-text {
+            text-align: center;
+            font-size: 11px;
+            color: #7f8c8d;
+        }
+
+        /* Summary Content Styles */
+        .summary-content {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+
+        .summary-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .summary-list li {
+            position: relative;
+            padding-left: 16px;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .summary-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #00594c;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .summary-note {
+            margin-top: 12px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-left: 3px solid #00594c;
+            border-radius: 4px;
+            font-size: 10px;
+            color: #7f8c8d;
+            line-height: 1.4;
+        }
+
+        .icon-btn-small {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .icon-btn-small:hover {
+            opacity: 1;
+        }
+
+        /* Send Summary Section */
+        .send-summary-section {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e1e8ed;
+        }
+
+        .btn-send-summary {
+            width: 100%;
+            background: linear-gradient(135deg, #00594c 0%, #00a693 100%);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 3px 10px rgba(0, 89, 76, 0.2);
+        }
+
+        .btn-send-summary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 89, 76, 0.3);
+            background: linear-gradient(135deg, #004a3d 0%, #008c7a 100%);
+        }
+
+        .btn-send-summary:active {
+            transform: translateY(0);
+        }
+
+        /* Scrollbar */
+        .column::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .column::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .column::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 3px;
+        }
+
+        .column::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+
+        /* Add Note Section */
+        .add-note {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e1e8ed;
+        }
+
+        .note-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 60px;
+            margin-bottom: 10px;
+        }
+
+        .note-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Top Header -->
+        <div class="top-header">
+            <div class="header-left">
+                <div class="app-logo">
+                    <div class="logo-icon">🤖</div>
+                    <div class="app-title">Colleague Assist</div>
+                </div>
+                <input type="text" class="search-bar" placeholder="🔍 Search interactions...">
+            </div>
+            <div class="header-right">
+                <button class="header-btn">📊 Analytics</button>
+                <button class="header-btn">⚙️ Settings</button>
+                <div class="agent-avatar">JD</div>
+            </div>
+        </div>
+
+        <!-- Customer Info Bar -->
+        <div class="customer-info-bar">
+            <div class="customer-details">
+                <div class="customer-avatar">👤</div>
+                <div class="customer-info">
+                    <h2>John Smith</h2>
+                    <div class="customer-meta">
+                        Account: 77-00-11 89765671 • Balance: £1,134.66 • DOB: 13-05-1994
+                    </div>
+                </div>
+            </div>
+            <div class="status-badges">
+                <div class="badge badge-success">
+                    <span class="status-dot"></span>
+                    Active Call
+                </div>
+                <div class="badge badge-info">
+                    ⏱️ 2:47
+                </div>
+                <div class="badge badge-warning">
+                    101 - Switch Account
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="main-content">
+            
+            <!-- Left Column: Detection & Timeline -->
+            <div class="column">
+                <!-- Fraud Detection Alert -->
+                <div class="card fraud-alert-card">
+                    <div class="card-header" style="background: #fff3cd; border-bottom: 1px solid #ffc107;">
+                        <div class="card-header-left">
+                            <span class="card-icon">⚠️</span>
+                            <span class="card-title" style="color: #856404;">Fraud Detection Alert</span>
+                        </div>
+                        <span class="badge badge-warning" style="background: #ff9800; color: white; border: none;">Medium Risk</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="fraud-alert-content">
+                            <div class="fraud-indicator">
+                                <span class="fraud-icon">🔍</span>
+                                <div class="fraud-text">
+                                    <div class="fraud-title">Unusual Activity Detected</div>
+                                    <div class="fraud-description">
+                                        Multiple login attempts from different locations within 2 hours
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="fraud-details">
+                                <div class="fraud-detail-row">
+                                    <span class="fraud-label">Last Login:</span>
+                                    <span class="fraud-value">Manchester, UK - 08:34 AM</span>
+                                </div>
+                                <div class="fraud-detail-row">
+                                    <span class="fraud-label">Current Login:</span>
+                                    <span class="fraud-value">London, UK - 10:15 AM</span>
+                                </div>
+                                <div class="fraud-detail-row">
+                                    <span class="fraud-label">Risk Score:</span>
+                                    <span class="fraud-value" style="color: #ff9800; font-weight: 700;">6.5/10</span>
+                                </div>
+                            </div>
+
+                            <div class="fraud-actions">
+                                <button class="btn btn-fraud-primary">🔒 Secure Account</button>
+                                <button class="btn btn-fraud-secondary">✓ Verify Customer</button>
+                                <button class="btn btn-fraud-secondary">📋 View Details</button>
+                            </div>
+
+                            <div class="fraud-recommendation">
+                                <strong>AI Recommendation:</strong> Verify customer identity using secondary authentication before proceeding with transactions.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Smart Detection Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header-left">
+                            <span class="card-icon">🎯</span>
+                            <span class="card-title">Smart Detection</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="detection-alert">
+                            <div class="detection-label">
+                                ⚡ QUESTION DETECTED - HIGH CONFIDENCE
+                            </div>
+                            <div class="detection-question">
+                                "How can I activate my debit card?"
+                            </div>
+                        </div>
+
+                        <div class="sentiment-section">
+                            <div class="sentiment-label">Customer Sentiment Analysis</div>
+                            <div class="sentiment-bar">
+                                <div class="sentiment-fill"></div>
+                            </div>
+                            <div class="sentiment-text">😊 Positive (75%)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interaction Timeline -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header-left">
+                            <span class="card-icon">📝</span>
+                            <span class="card-title">Interaction Timeline</span>
+                        </div>
+                        <button class="card-action">+</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="timeline-item">
+                            <div class="timeline-icon active">🔔</div>
+                            <div class="timeline-content">
+                                <div class="timeline-time">10:23 AM - Just now</div>
+                                <div class="timeline-title">Question Detected</div>
+                                <div class="timeline-text">Customer inquired about debit card activation</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-icon">✓</div>
+                            <div class="timeline-content">
+                                <div class="timeline-time">10:22 AM</div>
+                                <div class="timeline-title">Identity Verified</div>
+                                <div class="timeline-text">Confirmed via DOB and account number</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-icon">📞</div>
+                            <div class="timeline-content">
+                                <div class="timeline-time">10:21 AM</div>
+                                <div class="timeline-title">Call Started</div>
+                                <div class="timeline-text">Reason: Account switch inquiry (ID: 101)</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-icon">⏸️</div>
+                            <div class="timeline-content">
+                                <div class="timeline-time">10:20 AM</div>
+                                <div class="timeline-title">Hold Time</div>
+                                <div class="timeline-text">Customer waited 15 seconds</div>
+                            </div>
+                        </div>
+
+                        <div class="add-note">
+                            <textarea class="note-input" id="noteInput" placeholder="Add a note to this timeline..."></textarea>
+                            <button class="btn btn-primary" onclick="addNote()">+ Add Note</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Middle Column: AI Suggestions -->
+            <div class="column">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header-left">
+                            <span class="card-icon">💡</span>
+                            <span class="card-title">AI-Powered Responses</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="suggestion-item">
+                            <div class="suggestion-header">
+                                <span class="suggestion-number">1</span>
+                                <span class="suggestion-method">📱 Mobile Banking Activation</span>
+                            </div>
+                            <div class="suggestion-text">
+                                You can activate your debit card instantly through our mobile banking app. Simply log in, navigate to 'Cards', select your new card, and tap 'Activate'. You'll be able to use it immediately after activation.
+                            </div>
+                            <div class="suggestion-actions">
+                                <button class="btn btn-primary" onclick="useResponse(1)">✓ Use This</button>
+                                <button class="btn btn-secondary">📋 Copy</button>
+                                <button class="btn btn-secondary">✏️ Edit</button>
+                            </div>
+                        </div>
+
+                        <div class="suggestion-item">
+                            <div class="suggestion-header">
+                                <span class="suggestion-number">2</span>
+                                <span class="suggestion-method">🏧 ATM Activation</span>
+                            </div>
+                            <div class="suggestion-text">
+                                Visit any Lloyds Bank ATM with your new card and PIN. Insert your card, enter your PIN when prompted, and select 'Activate Card' from the menu. Your card will be ready to use right away.
+                            </div>
+                            <div class="suggestion-actions">
+                                <button class="btn btn-primary" onclick="useResponse(2)">✓ Use This</button>
+                                <button class="btn btn-secondary">📋 Copy</button>
+                                <button class="btn btn-secondary">✏️ Edit</button>
+                            </div>
+                        </div>
+
+                        <div class="suggestion-item">
+                            <div class="suggestion-header">
+                                <span class="suggestion-number">3</span>
+                                <span class="suggestion-method">☎️ Phone Activation</span>
+                            </div>
+                            <div class="suggestion-text">
+                                Call our automated activation line at 0345 300 0000. Have your card and account details ready. Follow the voice prompts to complete activation in just a few minutes.
+                            </div>
+                            <div class="suggestion-actions">
+                                <button class="btn btn-primary" onclick="useResponse(3)">✓ Use This</button>
+                                <button class="btn btn-secondary">📋 Copy</button>
+                                <button class="btn btn-secondary">✏️ Edit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Summary & Feedback -->
+            <div class="column">
+                <!-- Interaction Summary Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header-left">
+                            <span class="card-icon">📄</span>
+                            <span class="card-title">Interaction Summary</span>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="icon-btn-small" title="Refresh">🔄</button>
+                            <button class="icon-btn-small" title="Edit">✏️</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="summary-content">
+                            <ul class="summary-list">
+                                <li>John Smith contacted the customer service center to inquire about activating his new debit card for his Current Account (77-00-11 89765671).</li>
+                                <li>The agent verified the customer's identity using his date of birth (13-05-1994) and account number, confirming his account balance of £1,134.66.</li>
+                                <li>The customer was provided with three activation options: mobile banking app, ATM activation, or phone activation line (0345 300 0000).</li>
+                                <li>John expressed interest in the mobile banking method as it was the quickest option. The agent successfully guided him through the activation steps.</li>
+                                <li>During the call, the customer also mentioned his recent account switch request (ID: 101), which the agent confirmed was in progress and would be completed by the scheduled date.</li>
+                            </ul>
+                            <div class="summary-note">
+                                <em>This summary was created using Claude AI. It may not summarize all the content in the transcript, which should be referenced as needed.</em>
+                            </div>
+                        </div>
+
+                        <!-- Send Summary Section -->
+                        <div class="send-summary-section">
+                            <button class="btn-send-summary" onclick="sendSummary()">
+                                <span style="font-size: 16px;">📤</span>
+                                <span>Send to Advisor</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Call Details -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header-left">
+                            <span class="card-icon">📊</span>
+                            <span class="card-title">Call Details</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value">2:47</div>
+                                <div class="stat-label">Duration</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">3</div>
+                                <div class="stat-label">AI Assists</div>
+                            </div>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">Call Reason</span>
+                            <span class="info-value">Switch Account</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Product Type</span>
+                            <span class="info-value">Current Account</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Account Type</span>
+                            <span class="info-value">Joint Account</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">CUR</span>
+                            <span class="info-value">Holder of Product</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Utterance</span>
+                            <span class="info-value">Switch Account</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Verification</span>
+                            <span class="info-value">Password ✓</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Indicators</span>
+                            <span class="info-value">015 / 016</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Hold Time</span>
+                            <span class="info-value">00:00:15</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Feedback -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header-left">
+                            <span class="card-icon">⭐</span>
+                            <span class="card-title">Rate AI Assistance</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="feedback-buttons">
+                            <button class="feedback-btn" onclick="giveFeedback(this, 'positive')">👍</button>
+                            <button class="feedback-btn" onclick="giveFeedback(this, 'negative')">👎</button>
+                        </div>
+                        <div class="feedback-text">
+                            Your feedback helps improve AI suggestions
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function useResponse(num) {
+            const items = document.querySelectorAll('.suggestion-item');
+            items.forEach(item => {
+                item.style.borderColor = '#e1e8ed';
+                item.style.background = '#f8f9fa';
+            });
+            
+            items[num - 1].style.borderColor = '#28a745';
+            items[num - 1].style.background = '#d4edda';
+            
+            setTimeout(() => {
+                items[num - 1].style.borderColor = '#e1e8ed';
+                items[num - 1].style.background = '#f8f9fa';
+            }, 2000);
+            
+            alert(`Response ${num} is ready to use!`);
+        }
+
+        function giveFeedback(btn, type) {
+            document.querySelectorAll('.feedback-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            setTimeout(() => {
+                alert(`Thank you for your ${type} feedback!`);
+            }, 300);
+        }
+
+        function addNote() {
+            const input = document.getElementById('noteInput');
+            const noteText = input.value.trim();
+            
+            if (!noteText) {
+                alert('Please enter a note before adding.');
+                return;
+            }
+            
+            const timeline = document.querySelector('.card-body');
+            const currentTime = new Date().toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            
+            const noteHTML = `
+                <div class="timeline-item">
+                    <div class="timeline-icon active">📌</div>
+                    <div class="timeline-content">
+                        <div class="timeline-time">${currentTime} - Just now</div>
+                        <div class="timeline-title">Agent Note</div>
+                        <div class="timeline-text">${noteText}</div>
+                    </div>
+                </div>
+            `;
+            
+            timeline.insertAdjacentHTML('afterbegin', noteHTML);
+            input.value = '';
+        }
+
+        function sendSummary() {
+            // Show a modal or popup for sending summary
+            const recipient = prompt('Enter the advisor name or email to send the interaction summary:');
+            
+            if (recipient && recipient.trim()) {
+                alert(`Interaction summary sent successfully to: ${recipient}`);
+                console.log('Summary sent to:', recipient);
+                // Here you would implement the actual sending logic
+            } else if (recipient !== null) {
+                alert('Please enter a valid recipient.');
+            }
+        }
+    </script>
+</body>
+</html>
